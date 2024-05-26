@@ -1,0 +1,24 @@
+{
+  "name": "michaels-startdate",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/michaels-startdate/src",
+  "projectType": "application",
+  "tags": [],
+  "targets": {
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "michaels-startdate:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "michaels-startdate:build:development"
+        },
+        "production": {
+          "buildTarget": "michaels-startdate:build:production"
+        }
+      }
+    }
+  }
+}
