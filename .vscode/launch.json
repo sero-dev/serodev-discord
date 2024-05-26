@@ -1,0 +1,12 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Attach to Michael's Start Date",
+      "request": "attach",
+      "cwd": "${workspaceFolder}/apps/michaels-startdate",
+      "type": "node",
+      "port": 9229
+    }
+  ]
+}
