@@ -4,6 +4,7 @@ import { CommandDirectory, CommandInstalledResponse } from './command.model';
 import { ConfigService } from '@nestjs/config';
 import { PingCommand } from './commands/ping.command';
 import { StartDateCommand } from './commands/startdate.command';
+import constant from '../../constant';
 
 /**
  * Service for managing and installing Discord commands.
@@ -69,7 +70,7 @@ export class CommandService {
     route: `/${string}`,
     commands: CommandDirectory
   ) {
-    const token = this.configService.getOrThrow('DISCORD_TOKEN');
+    const token = this.configService.getOrThrow(constant.config.discordToken);
 
     const commandsRequest = commands.map((c) => c.data.toJSON());
     const rest = new REST().setToken(token);
