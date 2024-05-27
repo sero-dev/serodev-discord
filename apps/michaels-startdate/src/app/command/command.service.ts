@@ -5,6 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { PingCommand } from './commands/ping.command';
 import { StartDateCommand } from './commands/startdate.command';
 import constant from '../../constant';
+import { ModuleRef } from '@nestjs/core';
 
 /**
  * Service for managing and installing Discord commands.
@@ -23,15 +24,18 @@ export class CommandService {
     return this._commands;
   }
 
-  constructor(private readonly configService: ConfigService) {}
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly moduleRef: ModuleRef
+  ) {}
 
   /**
    * Loads all available commands into the command directory.
    * @returns {Promise<CommandDirectory>} A promise that resolves with the loaded command directory.
    */
   public async loadAllCommands(): Promise<CommandDirectory> {
-    this._commands.addCommand(new PingCommand());
-    this._commands.addCommand(new StartDateCommand());
+    this._commands.addCommand(this.moduleRef.get(PingCommand));
+    this._commands.addCommand(this.moduleRef.get(StartDateCommand));
     return this.commands;
   }
 

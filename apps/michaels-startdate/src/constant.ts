@@ -23,5 +23,13 @@ export default {
     clientId: 'DISCORD_CLIENT_ID',
     guildId: 'DISCORD_GUILD_ID',
     devMode: 'DEV_MODE',
+
+    userIds: {
+      strawberry: 'STRAWBERRY_ID',
+      mango: 'MANGO_ID',
+      raspberry: 'RASPBERRY_ID',
+      honeydew: 'HONEYDEW_ID',
+      pear: 'PEAR_ID',
+    },
   },
 };
