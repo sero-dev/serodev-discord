@@ -1,9 +1,15 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Collection, SlashCommandBuilder } from 'discord.js';
+import {
+  CacheType,
+  ChatInputCommandInteraction,
+  Collection,
+  SlashCommandBuilder,
+} from 'discord.js';
 
 export interface Command {
   data: SlashCommandBuilder;
-  execute: (value: any) => Promise<void>;
+  execute: (
+    interaction: ChatInputCommandInteraction<CacheType>
+  ) => Promise<void>;
 }
 
 export interface CommandInstalledResponse {
@@ -13,7 +19,7 @@ export interface CommandInstalledResponse {
   description: string;
 }
 
-export function isCommand(o: any): o is Command {
+export function isCommand(o: object): o is Command {
   return 'data' in o && 'execute' in o;
 }
 
