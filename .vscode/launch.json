@@ -2,11 +2,17 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Attach to Michael's Start Date",
-      "request": "attach",
-      "cwd": "${workspaceFolder}/apps/michaels-startdate",
+      "name": "Debug NestJS App",
       "type": "node",
-      "port": 9229
+      "request": "launch",
+      "program": "${workspaceFolder}/apps/michaels-startdate/src/main.ts",
+      "preLaunchTask": "nx: michaels-startdate",
+      "outFiles": ["${workspaceFolder}/dist/apps/michaels-startdate/**/*.js"],
+      "sourceMaps": true,
+      "cwd": "${workspaceFolder}",
+      "restart": true,
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
     }
   ]
 }

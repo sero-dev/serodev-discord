@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Client, Events, GatewayIntentBits } from 'discord.js';
+import { AuditLogEvent, Client, Events, GatewayIntentBits } from 'discord.js';
 import { CommandService } from '../command/command.service';
 import { onClientReady } from './events/client-ready.event';
 import { onInteractionCreate } from './events/interaction-create.event';
-import constant from '../../constant';
+import constant from '../constant';
+import { onAuditLogCreate } from './events/audit-log-create.event';
 
 @Injectable()
 export class DiscordService {
@@ -27,9 +28,18 @@ export class DiscordService {
       this.client.on(Events.InteractionCreate, async (interaction) =>
         onInteractionCreate(interaction, commands)
       );
+
+      this.client.on(Events.GuildAuditLogEntryCreate, async (auditLog) => onAuditLogCreate(auditLog, this.client));
     });
 
-    this.client = new Client({ intents: [GatewayIntentBits.Guilds] });
+    this.client = new Client({
+      intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildVoiceStates,
+        GatewayIntentBits.GuildModeration,
+      ],
+    });
+
     this.client.login(token);
   }
 }

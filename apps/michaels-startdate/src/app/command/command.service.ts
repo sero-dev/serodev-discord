@@ -4,7 +4,7 @@ import { CommandDirectory, CommandInstalledResponse } from './command.model';
 import { ConfigService } from '@nestjs/config';
 import { PingCommand } from './commands/ping.command';
 import { StartDateCommand } from './commands/startdate.command';
-import constant from '../../constant';
+import constant from '../constant';
 import { ModuleRef } from '@nestjs/core';
 
 /**

@@ -6,7 +6,7 @@ import {
 import { Command } from '../command.model';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import constant from '../../../constant';
+import constant from '../../constant';
 
 /**
  * A command that replies with Michael's start date.
@@ -40,8 +40,6 @@ export class StartDateCommand implements Command {
     const { userIds } = constant.config;
     const userIdKeys = Object.keys(userIds);
     const users: { [Key: string]: User } = {};
-
-    this.logger.log(JSON.stringify(constant));
 
     userIdKeys.forEach((key) => {
       const id = this.configService.getOrThrow(userIds[key]);

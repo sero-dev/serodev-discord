@@ -1,0 +1,10 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "nx: michaels-startdate",
+      "type": "shell",
+      "command": "nx build michaels-startdate"
+    }
+  ]
+}

@@ -2,12 +2,11 @@ import { CacheType, Interaction } from 'discord.js';
 import { CommandDirectory } from '../../command/command.model';
 import { Logger } from '@nestjs/common';
 
+const logger = new Logger(onInteractionCreate.name);
 export async function onInteractionCreate(
   interaction: Interaction<CacheType>,
   commands: CommandDirectory
 ) {
-  const logger = new Logger(onInteractionCreate.name);
-
   if (!interaction.isChatInputCommand()) return;
   const command = commands.get(interaction.commandName);
 
