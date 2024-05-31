@@ -3,44 +3,53 @@ import {
   AuditLogChange,
   AuditLogEvent,
   Client,
+  Guild,
   GuildAuditLogsActionType,
   GuildAuditLogsEntry,
   GuildAuditLogsTargetType,
 } from 'discord.js';
+import { ViolationCommand } from '../../command/commands/violation.command';
 
 const logger = new Logger(onAuditLogCreate.name);
 export async function onAuditLogCreate(
   auditLogEntry: AuditLogEntryCreate,
-  client: Client<boolean>
+  guild: Guild,
+  client: Client<boolean>,
+  violationCommand: ViolationCommand
 ) {
   const { action } = auditLogEntry;
+  logger.debug(auditLogEntry.toJSON());
 
   switch (action) {
     case AuditLogEvent.MemberDisconnect:
-      onMemberKick(auditLogEntry, client);
+      onMemberDisconnect(auditLogEntry, guild, client, violationCommand);
       break;
     case AuditLogEvent.MemberKick:
-      onMemberDisconnect(auditLogEntry, client);
+      onMemberKick(auditLogEntry, guild, client, violationCommand);
       break;
     case AuditLogEvent.MemberUpdate:
-      onMemberUpdate(auditLogEntry, client);
+      onMemberUpdate(auditLogEntry, guild, client, violationCommand);
       break;
   }
 }
 
 async function onMemberUpdate(
   auditLogEntry: AuditLogEntryCreate,
-  client: Client<boolean>
+  guild: Guild,
+  client: Client<boolean>,
+  violationCommand: ViolationCommand
 ) {
   const { executorId, targetId, changes } = auditLogEntry;
   const executor = await client.users.fetch(executorId);
   const userUpdated = await client.users.fetch(targetId);
 
   if (wasMuted(changes)) {
+    violationCommand.addViolation(executorId, guild.id, 'muted');
     logger.log(
       `${userUpdated.globalName} was muted by ${executor.globalName}.`
     );
   } else if (wasDeafen(changes)) {
+    violationCommand.addViolation(executorId, guild.id, 'deafen');
     logger.log(
       `${userUpdated.globalName} was deafen by ${executor.globalName}.`
     );
@@ -49,26 +58,28 @@ async function onMemberUpdate(
 
 async function onMemberDisconnect(
   auditLogEntry: AuditLogEntryCreate,
-  client: Client<boolean>
+  guild: Guild,
+  client: Client<boolean>,
+  violationCommand: ViolationCommand
 ) {
-  const { executorId, targetId } = auditLogEntry;
+  const { executorId } = auditLogEntry;
   const executor = await client.users.fetch(executorId);
-  const disconnectedUser = await client.users.fetch(targetId);
 
-  logger.log(
-    `${disconnectedUser.globalName} was disconnected by ${executor.globalName}.`
-  );
+  violationCommand.addViolation(executorId, guild.id, 'disconnected');
+  logger.log(`${executor.globalName} disconnected a user`);
 }
 
 async function onMemberKick(
   auditLogEntry: AuditLogEntryCreate,
-  client: Client<boolean>
+  guild: Guild,
+  client: Client<boolean>,
+  violationCommand: ViolationCommand
 ) {
-  const { executorId, targetId } = auditLogEntry;
+  const { executorId } = auditLogEntry;
   const executor = await client.users.fetch(executorId);
-  const kickedUser = await client.users.fetch(targetId);
 
-  logger.log(`${kickedUser.globalName} was kicked by ${executor.globalName}.`);
+  violationCommand.addViolation(executor.id, guild.id, 'kicked');
+  logger.log(`${executor.globalName} kicked a user`);
 }
 
 type AuditLogEntryCreate = GuildAuditLogsEntry<
@@ -79,9 +90,9 @@ type AuditLogEntryCreate = GuildAuditLogsEntry<
 >;
 
 function wasMuted(changes: AuditLogChange[]) {
-  return changes.find((c) => c.key === 'mute' && c.new);
+  return !!changes.find((c) => c.key === 'mute' && c.new);
 }
 
 function wasDeafen(changes: AuditLogChange[]) {
-  return changes.find((c) => c.key === 'deaf' && c.new);
+  return !!changes.find((c) => c.key === 'deaf' && c.new);
 }

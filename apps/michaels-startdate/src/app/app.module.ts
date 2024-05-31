@@ -7,6 +7,7 @@ import { DiscordService } from './discord/discord.service';
 import { ConfigModule } from '@nestjs/config';
 import { PingCommand } from './command/commands/ping.command';
 import { StartDateCommand } from './command/commands/startdate.command';
+import { ViolationCommand } from './command/commands/violation.command';
 
 @Module({
   imports: [ConfigModule.forRoot()],
@@ -17,6 +18,7 @@ import { StartDateCommand } from './command/commands/startdate.command';
     DiscordService,
     PingCommand,
     StartDateCommand,
+    ViolationCommand,
   ],
 })
 export class AppModule {}
